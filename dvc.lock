@@ -1,0 +1,39 @@
+schema: '2.0'
+stages:
+  preprocess:
+    cmd: python -c "from src.data_processing import load_data, preprocess_data; df
+      = load_data('data/WA_Fn-UseC_-HR-Employee-Attrition.csv'); df = preprocess_data(df);
+      df.to_csv('data/preprocessed.csv', index=False)"
+    deps:
+    - path: data/WA_Fn-UseC_-HR-Employee-Attrition.csv
+      hash: md5
+      md5: ad8207459e5732574372cf8ff619883f
+      size: 227977
+    - path: src/data_processing.py
+      hash: md5
+      md5: 9163f6996b4f0573d6b8393f8de1f046
+      size: 514
+    outs:
+    - path: data/preprocessed.csv
+      hash: md5
+      md5: 6605387dfa89b5be7ecbdeaf2923d07a
+      size: 284047
+  train_v2:
+    cmd: python -c "from src.data_processing import load_data, split_data; from src.model
+      import train_model; import joblib; df = load_data('data/preprocessed.csv');
+      X_train, X_test, y_train, y_test = split_data(df); model = train_model(X_train,
+      y_train); joblib.dump(model, 'models/model.pkl')"
+    deps:
+    - path: data/preprocessed.csv
+      hash: md5
+      md5: 6605387dfa89b5be7ecbdeaf2923d07a
+      size: 284047
+    - path: src/model.py
+      hash: md5
+      md5: 93e1d3f58a3267dee3a5ceb7ddffd907
+      size: 382
+    outs:
+    - path: models/model.pkl
+      hash: md5
+      md5: 26cc1cef55c7301cdb8800a1b94757ae
+      size: 2407577

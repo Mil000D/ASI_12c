@@ -1,0 +1,20 @@
+stages:
+  preprocess:
+    cmd: python -c "from src.data_processing import load_data, preprocess_data; df
+      = load_data('data/WA_Fn-UseC_-HR-Employee-Attrition.csv'); df = preprocess_data(df);
+      df.to_csv('data/preprocessed.csv', index=False)"
+    deps:
+    - data/WA_Fn-UseC_-HR-Employee-Attrition.csv
+    - src/data_processing.py
+    outs:
+    - data/preprocessed.csv
+  train_v2:
+    cmd: python -c "from src.data_processing import load_data, split_data; from src.model
+      import train_model; import joblib; df = load_data('data/preprocessed.csv');
+      X_train, X_test, y_train, y_test = split_data(df); model = train_model(X_train,
+      y_train); joblib.dump(model, 'models/model.pkl')"
+    deps:
+    - data/preprocessed.csv
+    - src/model.py
+    outs:
+    - models/model.pkl
